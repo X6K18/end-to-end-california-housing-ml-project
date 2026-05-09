@@ -3,54 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>California House Price Prediction</title>
+    <title>Dự đoán giá nhà California</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .login { background: white; padding: 30px; border-radius: 10px; shadow: 0 4px 8px rgba(0,0,0,0.1); width: 400px; }
-        h1 { text-align: center; color: #333; font-size: 24px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #218838; }
-        .result { margin-top: 20px; text-align: center; font-weight: bold; color: #007bff; font-size: 18px; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            padding: 40px; 
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Đã sửa lỗi shadow */
+            width: 100%;
+            max-width: 500px; 
+        }
+        h1 { text-align: center; color: #1a73e8; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #444; }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            transition: border 0.3s;
+        }
+        input:focus { border-color: #1a73e8; outline: none; }
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            background-color: #1a73e8; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #1557b0; }
+        .result { 
+            margin-top: 25px; 
+            text-align: center; 
+            padding: 15px;
+            background-color: #e8f0fe;
+            border-radius: 6px;
+            font-weight: bold; 
+            color: #1a73e8; 
+            min-height: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="login">
-        <h1>Housing Price Prediction</h1>
-
-        <!-- Form gửi dữ liệu đến route /predict bằng phương thức POST -->
+    <div class="container">
+        <h1>California Housing</h1>
         <form action="{{ url_for('predict')}}" method="post">
-            
-            <label for="MedInc">Median Income</label>
-            <input type="text" name="MedInc" placeholder="e.g. 3.5" required="required" />
-
-            <label for="HouseAge">House Age</label>
-            <input type="text" name="HouseAge" placeholder="e.g. 20" required="required" />
-
-            <label for="AveRooms">Average Rooms</label>
-            <input type="text" name="AveRooms" placeholder="e.g. 5.2" required="required" />
-
-            <label for="AveBedrms">Average Bedrooms</label>
-            <input type="text" name="AveBedrms" placeholder="e.g. 1.0" required="required" />
-
-            <label for="Population">Population</label>
-            <input type="text" name="Population" placeholder="e.g. 1200" required="required" />
-
-            <label for="AveOccup">Average Occupancy</label>
-            <input type="text" name="AveOccup" placeholder="e.g. 3.0" required="required" />
-
-            <label for="Latitude">Latitude</label>
-            <input type="text" name="Latitude" placeholder="e.g. 34.05" required="required" />
-
-            <label for="Longitude">Longitude</label>
-            <input type="text" name="Longitude" placeholder="e.g. -118.24" required="required" />
-
-            <button type="submit">Predict Price</button>
+            <div class="form-group">
+                <label>Median Income (Thu nhập TB)</label>
+                <input type="number" step="any" name="MedInc" placeholder="Ví dụ: 3.87" required>
+            </div>
+            <div class="form-group">
+                <label>House Age (Tuổi nhà)</label>
+                <input type="number" step="any" name="HouseAge" placeholder="Ví dụ: 28" required>
+            </div>
+            <div class="form-group">
+                <label>Average Rooms (Số phòng TB)</label>
+                <input type="number" step="any" name="AveRooms" placeholder="Ví dụ: 5.4" required>
+            </div>
+            <div class="form-group">
+                <label>Average Bedrooms (Phòng ngủ TB)</label>
+                <input type="number" step="any" name="AveBedrms" placeholder="Ví dụ: 1.1" required>
+            </div>
+            <div class="form-group">
+                <label>Population (Dân số khu vực)</label>
+                <input type="number" step="any" name="Population" placeholder="Ví dụ: 1400" required>
+            </div>
+            <div class="form-group">
+                <label>Average Occupancy (Số người/nhà)</label>
+                <input type="number" step="any" name="AveOccup" placeholder="Ví dụ: 3.0" required>
+            </div>
+            <div class="form-group">
+                <label>Latitude (Vĩ độ)</label>
+                <input type="number" step="any" name="Latitude" placeholder="Ví dụ: 34.05" required>
+            </div>
+            <div class="form-group">
+                <label>Longitude (Kinh độ)</label>
+                <input type="number" step="any" name="Longitude" placeholder="Ví dụ: -118.24" required>
+            </div>
+            <button type="submit">Dự đoán ngay</button>
         </form>
 
-        <!-- Hiển thị kết quả dự đoán từ biến prediction_text trong Flask -->
         <div class="result">
-            {{prediction_text}}
+            {% if prediction_text %}
+                {{ prediction_text }}
+            {% endif %}
         </div>
     </div>
 </body>
