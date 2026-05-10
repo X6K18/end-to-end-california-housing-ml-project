@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+{% block page_title %}System Settings{% endblock %}
+
+{% block content %}
+<div style="background:#0f0f0f; border-radius:20px; padding:30px; border:1px solid #202020;">
+    <div style="margin-bottom:25px;">
+        <label style="display:block; margin-bottom:10px; color:#aaa;">🌓 Theme Preference</label>
+        <select style="background:#050505; border:1px solid #333; color:white; padding:10px 20px; border-radius:10px;">
+            <option>Dark Mode (Forced)</option>
+            <option>Light Mode (Not supported)</option>
+        </select>
+    </div>
+    <div style="margin-bottom:25px;">
+        <label style="display:block; margin-bottom:10px; color:#aaa;">📊 Default Chart Type</label>
+        <select style="background:#050505; border:1px solid #333; color:white; padding:10px 20px; border-radius:10px;">
+            <option>Bar Chart</option>
+            <option>Line Chart</option>
+            <option>Scatter Plot</option>
+        </select>
+    </div>
+    <div style="margin-bottom:25px;">
+        <label style="display:block; margin-bottom:10px; color:#aaa;">🔄 Reset Prediction History</label>
+        <button onclick="localStorage.removeItem('predictionCount'); alert('History reset!'); location.reload();" style="background:#ef4444; border:none; padding:10px 20px; border-radius:10px; color:white; cursor:pointer;">Reset Counter</button>
+    </div>
+</div>
+{% endblock %}

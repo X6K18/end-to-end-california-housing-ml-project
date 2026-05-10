@@ -1,0 +1,493 @@
+{% extends "base.html" %}
+
+{% block title %}Predictions{% endblock %}
+{% block page_title %}House Price Prediction{% endblock %}
+
+{% block content %}
+
+<style>
+    .metric-good {
+        color: #34d399;
+    }
+
+    .metric-warning {
+        color: #f59e0b;
+    }
+
+    .input-box {
+        width: 100%;
+        padding: 10px;
+        background: #050505;
+        border: 1px solid #333;
+        color: white;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    .card {
+        background: #0f0f0f;
+        border-radius: 20px;
+        padding: 25px;
+        border: 1px solid #202020;
+    }
+
+    .comparison-table {
+        width: 100%;
+        background: #050505;
+        border-radius: 10px;
+        border-collapse: collapse;
+        overflow: hidden;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 12px;
+    }
+
+    .comparison-table th {
+        color: #888;
+    }
+
+    .comparison-table tr {
+        border-bottom: 1px solid #1a1a1a;
+    }
+
+    .result-price {
+        font-size: 28px;
+        font-weight: bold;
+        color: #34d399;
+        margin-top: 10px;
+    }
+
+    .result-box {
+        margin-top: 20px;
+        padding: 20px;
+        background: #050505;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .best-model-box {
+        margin-top: 15px;
+        padding: 12px;
+        background: linear-gradient(135deg,#1e293b,#0f172a);
+        border-radius: 10px;
+        text-align: center;
+    }
+</style>
+
+<div
+    style="display:grid; grid-template-columns:1fr 1fr; gap:30px;"
+    id="prediction-wrapper"
+    data-prediction="{{ prediction_text if prediction_text else '' }}"
+>
+
+    <!-- FORM -->
+    <div class="card">
+
+        <form action="{{ url_for('predictions.predictions') }}" method="POST">
+
+            <!-- MODEL -->
+            <div style="margin-bottom:20px;">
+
+                <label
+                    style="
+                        display:block;
+                        margin-bottom:10px;
+                        color:#aaa;
+                    "
+                >
+                    🤖 Select Model
+                </label>
+
+                <select
+                    name="model"
+                    class="input-box"
+                    style="padding:12px;"
+                >
+
+                    {% for model_key, model in models.items() %}
+
+                    <option
+                        value="{{ model_key }}"
+                        {% if selected_model == model_key %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ model.name }}
+                        (R²: {{ "%.3f"|format(model.metrics.r2) }})
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <div
+                    style="
+                        font-size:11px;
+                        color:#666;
+                        margin-top:5px;
+                    "
+                >
+                    💡 Tree-based models don't require scaling
+                </div>
+
+            </div>
+
+            <!-- INPUTS -->
+            <div
+                style="
+                    display:grid;
+                    grid-template-columns:1fr 1fr;
+                    gap:15px;
+                "
+            >
+
+                <div>
+                    <label style="color:#aaa;">💰 Median Income</label>
+                    <input type="number" step="any" name="MedInc" placeholder="3.87" required class="input-box">
+                </div>
+
+                <div>
+                    <label style="color:#aaa;">🏘️ House Age</label>
+                    <input type="number" step="any" name="HouseAge" placeholder="28" required class="input-box">
+                </div>
+
+                <div>
+                    <label style="color:#aaa;">🚪 Avg Rooms</label>
+                    <input type="number" step="any" name="AveRooms" placeholder="5.4" required class="input-box">
+                </div>
+
+                <div>
+                    <label style="color:#aaa;">🛏️ Avg Bedrooms</label>
+                    <input type="number" step="any" name="AveBedrms" placeholder="1.1" required class="input-box">
+                </div>
+
+                <div>
+                    <label style="color:#aaa;">👥 Population</label>
+                    <input type="number" step="any" name="Population" placeholder="1400" required class="input-box">
+                </div>
+
+                <div>
+                    <label style="color:#aaa;">🏠 Avg Occupancy</label>
+                    <input type="number" step="any" name="AveOccup" placeholder="3.0" required class="input-box">
+                </div>
+
+                <div>
+                    <label style="color:#aaa;">🗺️ Latitude</label>
+                    <input type="number" step="any" name="Latitude" placeholder="34.05" required class="input-box">
+                </div>
+
+                <div>
+                    <label style="color:#aaa;">🗺️ Longitude</label>
+                    <input type="number" step="any" name="Longitude" placeholder="-118.24" required class="input-box">
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+            <button
+                type="submit"
+                style="
+                    width:100%;
+                    margin-top:25px;
+                    padding:14px;
+                    background:linear-gradient(135deg,#1e293b,#0f172a);
+                    border:none;
+                    border-radius:12px;
+                    color:white;
+                    font-weight:bold;
+                    cursor:pointer;
+                "
+            >
+                🚀 Predict Now
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- RESULT -->
+    <div class="card">
+
+        <div class="chart-container">
+            <canvas id="predictionChart"></canvas>
+        </div>
+
+        {% if prediction_text %}
+
+        <div class="result-box">
+
+            🏆 Predicted House Price
+
+            <div class="result-price">
+                {{ prediction_text }}
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <!-- TABLE -->
+        {% if all_predictions %}
+
+        <div style="margin-top:25px;">
+
+            <h4
+                style="
+                    margin-bottom:15px;
+                    color:#aaa;
+                "
+            >
+                📊 All Models Comparison
+            </h4>
+
+            <table class="comparison-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th style="text-align:left;">
+                            Model
+                        </th>
+
+                        <th style="text-align:right;">
+                            Prediction
+                        </th>
+
+                        <th style="text-align:right;">
+                            R² Score
+                        </th>
+
+                        <th style="text-align:center;">
+                            Scaling
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for result in all_predictions %}
+
+                    <tr>
+
+                        <td style="font-weight:500;">
+                            {{ result.model_name }}
+                        </td>
+
+                        <td
+                            style="
+                                text-align:right;
+                                color:#34d399;
+                                font-weight:600;
+                            "
+                        >
+                            ${{ "{:,.2f}".format(result.prediction) }}
+                        </td>
+
+                        <td style="text-align:right;">
+
+                            <span
+                                class="
+                                    {% if result.metrics.r2 > 0.8 %}
+                                        metric-good
+                                    {% else %}
+                                        metric-warning
+                                    {% endif %}
+                                "
+                            >
+                                {{ "%.3f"|format(result.metrics.r2) }}
+                            </span>
+
+                        </td>
+
+                        <td style="text-align:center;">
+
+                            {% if result.need_scaling %}
+
+                            <span style="color:#60a5fa;">
+                                 Required
+                            </span>
+
+                            {% else %}
+
+                            <span style="color:#34d399;">
+                                 Not Needed
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% set best = all_predictions|sort(attribute='metrics.r2', reverse=true)|first %}
+
+            <div class="best-model-box">
+
+                🎯 <strong>Best Model:</strong>
+
+                {{ best.model_name }}
+
+                (R² = {{ "%.3f"|format(best.metrics.r2) }})
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+
+    let predChart = null;
+
+    function initPredictionChart(prediction = null) {
+
+        const canvas =
+            document.getElementById('predictionChart');
+
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+
+        if (predChart) {
+            predChart.destroy();
+        }
+
+        const labels = [
+            'Min',
+            'Lower Quartile',
+            'Median',
+            'Upper Quartile',
+            'Max'
+        ];
+
+        const data = [
+            50000,
+            120000,
+            180000,
+            265000,
+            500001
+        ];
+
+        if (prediction && prediction > 0) {
+
+            labels.push('Your Prediction');
+
+            data.push(prediction);
+
+        }
+
+        predChart = new Chart(ctx, {
+
+            type: 'bar',
+
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Price (USD)',
+                    data: data,
+                    backgroundColor: 'rgba(96,165,250,0.6)',
+                    borderColor: '#60a5fa',
+                    borderRadius: 8
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                return '$' + ctx.raw.toLocaleString();
+                            }
+                        }
+                    }
+                },
+
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: function(v) {
+                                return '$' + (v / 1000) + 'K';
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        });
+
+    }
+
+    const wrapper =
+        document.getElementById('prediction-wrapper');
+
+    const predictionText =
+        wrapper.dataset.prediction;
+
+    if (predictionText) {
+
+        const priceMatch =
+            predictionText.match(/\$([\d,]+)/);
+
+        if (priceMatch) {
+
+            const price =
+                parseFloat(
+                    priceMatch[1].replace(/,/g, '')
+                );
+
+            initPredictionChart(price);
+
+            try {
+
+                let count =
+                    parseInt(
+                        localStorage.getItem('predictionCount') || '0'
+                    );
+
+                count++;
+
+                localStorage.setItem(
+                    'predictionCount',
+                    count.toString()
+                );
+
+            } catch (e) {
+
+                console.error(e);
+
+            }
+
+        } else {
+
+            initPredictionChart();
+
+        }
+
+    } else {
+
+        initPredictionChart();
+
+    }
+
+</script>
+
+{% endblock %}

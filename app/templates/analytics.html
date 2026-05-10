@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Housing Analytics{% endblock %}
+
+{% block content %}
+<div class="chart-container">
+    <canvas id="priceTrendChart"></canvas>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-title">Median Income Correlation</div>
+        <div class="stat-value">+0.72</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">House Age Correlation</div>
+        <div class="stat-value">+0.09</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">Latitude Correlation</div>
+        <div class="stat-value">-0.14</div>
+    </div>
+</div>
+
+<div class="chart-container">
+    <canvas id="geoScatterChart"></canvas>
+</div>
+
+<script>
+    // Price by feature simulation
+    new Chart(document.getElementById('priceTrendChart'), {
+        type: 'line',
+        data: {
+            labels: ['0-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10+'],
+            datasets: [
+                { label: 'Median Income', data: [50, 80, 120, 180, 250, 320, 400, 480, 550, 620], borderColor: '#60a5fa', tension: 0.3 },
+                { label: 'Avg Rooms', data: [120, 140, 160, 180, 200, 220, 240, 260, 280, 300], borderColor: '#34d399', tension: 0.3 }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#e0e0e0' } } },
+            scales: { y: { ticks: { color: '#e0e0e0', callback: (v) => '$' + v + 'K' }, grid: { color: '#1a1a1a' } }, x: { ticks: { color: '#e0e0e0' } } }
+        }
+    });
+
+    // Scatter geo simulation
+    new Chart(document.getElementById('geoScatterChart'), {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'House Prices by Location',
+                data: [{x: -124, y: 42}, {x: -122, y: 38}, {x: -120, y: 36}, {x: -118, y: 34}, {x: -116, y: 33}],
+                backgroundColor: '#f59e0b',
+                pointRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#e0e0e0' } } },
+            scales: { x: { title: { display: true, text: 'Longitude', color: '#aaa' }, ticks: { color: '#aaa' } }, y: { title: { display: true, text: 'Latitude', color: '#aaa' }, ticks: { color: '#aaa' } } }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-dollar-sign"></i> Average Price</div>
+        <div class="stat-value" id="avgPrice">$206,855</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-home"></i> Total Districts</div>
+        <div class="stat-value">20,640</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-chart-line"></i> Model R² Score</div>
+        <div class="stat-value">0.642</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-check-circle"></i> Predictions Today</div>
+        <div class="stat-value" id="predictionsCount">0</div>
+    </div>
+</div>
+
+<div class="chart-container">
+    <canvas id="priceDistributionChart"></canvas>
+</div>
+
+<div class="chart-container">
+    <canvas id="featureImportanceChart"></canvas>
+</div>
+
+<script>
+    // Price Distribution Chart
+    const priceCtx = document.getElementById('priceDistributionChart').getContext('2d');
+    new Chart(priceCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Min', 'Q1', 'Median', 'Q3', 'Max'],
+            datasets: [{
+                label: 'House Prices (USD)',
+                data: [50000, 120000, 180000, 265000, 500001],
+                backgroundColor: 'rgba(96,165,250,0.6)',
+                borderColor: '#60a5fa',
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: { callbacks: { label: (ctx) => '$' + ctx.raw.toLocaleString() } }
+            },
+            scales: {
+                y: { ticks: { color: '#e0e0e0', callback: (v) => '$' + (v/1000) + 'K' }, grid: { color: '#1a1a1a' } },
+                x: { ticks: { color: '#e0e0e0' }, grid: { display: false } }
+            }
+        }
+    });
+
+    // Feature Importance Chart
+    const featureCtx = document.getElementById('featureImportanceChart').getContext('2d');
+    new Chart(featureCtx, {
+        type: 'bar',
+        data: {
+            labels: ['MedInc', 'AveRooms', 'HouseAge', 'Population', 'Latitude', 'Longitude', 'AveBedrms', 'AveOccup'],
+            datasets: [{
+                label: 'Feature Importance',
+                data: [0.52, 0.18, 0.12, 0.08, 0.05, 0.03, 0.02, 0.01],
+                backgroundColor: 'rgba(139,92,246,0.6)',
+                borderColor: '#a78bfa',
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: 'y',
+            plugins: { legend: { labels: { color: '#e0e0e0' } } },
+            scales: {
+                x: { ticks: { color: '#e0e0e0' }, grid: { color: '#1a1a1a' } },
+                y: { ticks: { color: '#e0e0e0' }, grid: { display: false } }
+            }
+        }
+    });
+
+    // Simulate prediction count from localStorage
+    let count = localStorage.getItem('predictionCount') || 0;
+    document.getElementById('predictionsCount').innerText = count;
+</script>
+{% endblock %}
