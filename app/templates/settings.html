@@ -1,28 +1,365 @@
 {% extends "base.html" %}
 
 {% block title %}Settings{% endblock %}
-{% block page_title %}System Settings{% endblock %}
+{% block page_title %}⚙ System Settings{% endblock %}
 
 {% block content %}
-<div style="background:#0f0f0f; border-radius:20px; padding:30px; border:1px solid #202020;">
-    <div style="margin-bottom:25px;">
-        <label style="display:block; margin-bottom:10px; color:#aaa;">🌓 Theme Preference</label>
-        <select style="background:#050505; border:1px solid #333; color:white; padding:10px 20px; border-radius:10px;">
-            <option>Dark Mode (Forced)</option>
-            <option>Light Mode (Not supported)</option>
-        </select>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px;">
+    
+    <!-- Appearance Settings -->
+    <div style="background:#0f0f0f; border-radius:20px; padding:25px; border:1px solid #202020;">
+        <h3 style="margin-bottom: 20px; color: #60a5fa;">
+            <i class="fas fa-palette"></i> Appearance
+        </h3>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">🌓 Theme Preference</label>
+            <select id="themeSelect" style="background:#050505; border:1px solid #333; color:white; padding:10px 20px; border-radius:10px; width:100%;">
+                <option value="dark">Dark Mode (Default)</option>
+                <option value="light">Light Mode (Limited)</option>
+                <option value="auto">Auto (Follow System)</option>
+            </select>
+            <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                💡 Dark mode is fully supported for best experience
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">📊 Default Chart Type</label>
+            <select id="chartTypeSelect" style="background:#050505; border:1px solid #333; color:white; padding:10px 20px; border-radius:10px; width:100%;">
+                <option value="bar">Bar Chart</option>
+                <option value="line">Line Chart</option>
+                <option value="scatter">Scatter Plot</option>
+                <option value="radar">Radar Chart</option>
+            </select>
+            <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                📈 Choose your preferred visualization style
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">📐 Chart Size</label>
+            <select id="chartSizeSelect" style="background:#050505; border:1px solid #333; color:white; padding:10px 20px; border-radius:10px; width:100%;">
+                <option value="small">Small (300px)</option>
+                <option value="medium" selected>Medium (400px)</option>
+                <option value="large">Large (500px)</option>
+            </select>
+        </div>
     </div>
-    <div style="margin-bottom:25px;">
-        <label style="display:block; margin-bottom:10px; color:#aaa;">📊 Default Chart Type</label>
-        <select style="background:#050505; border:1px solid #333; color:white; padding:10px 20px; border-radius:10px;">
-            <option>Bar Chart</option>
-            <option>Line Chart</option>
-            <option>Scatter Plot</option>
-        </select>
+    
+    <!-- Model Settings -->
+    <div style="background:#0f0f0f; border-radius:20px; padding:25px; border:1px solid #202020;">
+        <h3 style="margin-bottom: 20px; color: #34d399;">
+            <i class="fas fa-robot"></i> Model Configuration
+        </h3>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">🤖 Default Prediction Model</label>
+            <select id="defaultModelSelect" style="background:#050505; border:1px solid #333; color:white; padding:10px 20px; border-radius:10px; width:100%;">
+                <option value="best_xgboost">🏆 Best XGBoost (Recommended)</option>
+                <option value="xgboost">⚡ XGBoost</option>
+                <option value="random_forest">🌲 Random Forest</option>
+                <option value="linear_regression">📊 Linear Regression</option>
+            </select>
+            <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                🎯 Best XGBoost has highest R² score (0.85)
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">📊 Show Model Comparison Table</label>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <label style="color:#aaa;">
+                    <input type="radio" name="showComparison" value="yes" checked> Yes
+                </label>
+                <label style="color:#aaa;">
+                    <input type="radio" name="showComparison" value="no"> No
+                </label>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">📈 Confidence Score Display</label>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <label style="color:#aaa;">
+                    <input type="radio" name="showConfidence" value="yes" checked> Show
+                </label>
+                <label style="color:#aaa;">
+                    <input type="radio" name="showConfidence" value="no"> Hide
+                </label>
+            </div>
+        </div>
     </div>
-    <div style="margin-bottom:25px;">
-        <label style="display:block; margin-bottom:10px; color:#aaa;">🔄 Reset Prediction History</label>
-        <button onclick="localStorage.removeItem('predictionCount'); alert('History reset!'); location.reload();" style="background:#ef4444; border:none; padding:10px 20px; border-radius:10px; color:white; cursor:pointer;">Reset Counter</button>
+    
+    <!-- Data Management -->
+    <div style="background:#0f0f0f; border-radius:20px; padding:25px; border:1px solid #202020;">
+        <h3 style="margin-bottom: 20px; color: #f59e0b;">
+            <i class="fas fa-database"></i> Data Management
+        </h3>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">🔄 Reset Prediction History</label>
+            <button id="resetCounterBtn" style="background:#ef4444; border:none; padding:10px 20px; border-radius:10px; color:white; cursor:pointer; width:100%;">
+                <i class="fas fa-trash"></i> Reset Counter
+            </button>
+            <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                Current predictions: <span id="currentCount">0</span>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">🗑️ Clear All Local Data</label>
+            <button id="clearAllDataBtn" style="background:#dc2626; border:none; padding:10px 20px; border-radius:10px; color:white; cursor:pointer; width:100%;">
+                <i class="fas fa-database"></i> Clear All Settings & History
+            </button>
+            <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                ⚠️ This will reset all your preferences and prediction history
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">📤 Export Settings</label>
+            <button id="exportSettingsBtn" style="background:#3b82f6; border:none; padding:10px 20px; border-radius:10px; color:white; cursor:pointer; width:100%;">
+                <i class="fas fa-download"></i> Export Settings to JSON
+            </button>
+        </div>
+    </div>
+    
+    <!-- Display Settings -->
+    <div style="background:#0f0f0f; border-radius:20px; padding:25px; border:1px solid #202020;">
+        <h3 style="margin-bottom: 20px; color: #a78bfa;">
+            <i class="fas fa-chart-line"></i> Display Settings
+        </h3>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">📊 Show Animations</label>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <label style="color:#aaa;">
+                    <input type="radio" name="showAnimations" value="yes" checked> Yes
+                </label>
+                <label style="color:#aaa;">
+                    <input type="radio" name="showAnimations" value="no"> No
+                </label>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">📈 Refresh Rate</label>
+            <select id="refreshRateSelect" style="background:#050505; border:1px solid #333; color:white; padding:10px 20px; border-radius:10px; width:100%;">
+                <option value="realtime">Real-time</option>
+                <option value="1s">Every 1 second</option>
+                <option value="5s" selected>Every 5 seconds</option>
+                <option value="manual">Manual only</option>
+            </select>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display:block; margin-bottom:10px; color:#aaa;">🔔 Notification Sounds</label>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <label style="color:#aaa;">
+                    <input type="radio" name="notificationSounds" value="yes"> Yes
+                </label>
+                <label style="color:#aaa;">
+                    <input type="radio" name="notificationSounds" value="no" checked> No
+                </label>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Save Settings Button -->
+<div style="margin-top: 25px; text-align: center;">
+    <button id="saveSettingsBtn" style="background: linear-gradient(135deg, #1e293b, #0f172a); border:1px solid #334155; padding:12px 30px; border-radius:12px; color:white; font-weight:bold; cursor:pointer; transition:0.3s;">
+        <i class="fas fa-save"></i> Save All Settings
+    </button>
+    <button id="resetSettingsBtn" style="background: #1a1a1a; border:1px solid #333; padding:12px 30px; border-radius:12px; color:#aaa; font-weight:bold; cursor:pointer; margin-left: 15px; transition:0.3s;">
+        <i class="fas fa-undo"></i> Reset to Default
+    </button>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" style="position: fixed; bottom: 20px; right: 20px; background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px 20px; display: none; z-index: 1000;">
+    <span id="toastMessage"></span>
+</div>
+
+<script>
+    // Load settings from localStorage
+    function loadSettings() {
+        const settings = JSON.parse(localStorage.getItem('appSettings') || '{}');
+        
+        // Appearance
+        if (settings.theme) document.getElementById('themeSelect').value = settings.theme;
+        if (settings.chartType) document.getElementById('chartTypeSelect').value = settings.chartType;
+        if (settings.chartSize) document.getElementById('chartSizeSelect').value = settings.chartSize;
+        
+        // Model
+        if (settings.defaultModel) document.getElementById('defaultModelSelect').value = settings.defaultModel;
+        if (settings.showComparison) {
+            document.querySelector(`input[name="showComparison"][value="${settings.showComparison}"]`).checked = true;
+        }
+        if (settings.showConfidence) {
+            document.querySelector(`input[name="showConfidence"][value="${settings.showConfidence}"]`).checked = true;
+        }
+        
+        // Display
+        if (settings.showAnimations) {
+            document.querySelector(`input[name="showAnimations"][value="${settings.showAnimations}"]`).checked = true;
+        }
+        if (settings.refreshRate) document.getElementById('refreshRateSelect').value = settings.refreshRate;
+        if (settings.notificationSounds) {
+            document.querySelector(`input[name="notificationSounds"][value="${settings.notificationSounds}"]`).checked = true;
+        }
+        
+        // Update prediction count display
+        const count = localStorage.getItem('predictionCount') || 0;
+        document.getElementById('currentCount').innerText = count;
+    }
+    
+    // Save settings to localStorage
+    function saveSettings() {
+        const settings = {
+            theme: document.getElementById('themeSelect').value,
+            chartType: document.getElementById('chartTypeSelect').value,
+            chartSize: document.getElementById('chartSizeSelect').value,
+            defaultModel: document.getElementById('defaultModelSelect').value,
+            showComparison: document.querySelector('input[name="showComparison"]:checked').value,
+            showConfidence: document.querySelector('input[name="showConfidence"]:checked').value,
+            showAnimations: document.querySelector('input[name="showAnimations"]:checked').value,
+            refreshRate: document.getElementById('refreshRateSelect').value,
+            notificationSounds: document.querySelector('input[name="notificationSounds"]:checked').value
+        };
+        
+        localStorage.setItem('appSettings', JSON.stringify(settings));
+        showToast('✅ Settings saved successfully!');
+        
+        // Apply settings
+        applySettings();
+    }
+    
+    // Apply settings to current page
+    function applySettings() {
+        const settings = JSON.parse(localStorage.getItem('appSettings') || '{}');
+        
+        // Apply chart size
+        if (settings.chartSize) {
+            const charts = document.querySelectorAll('canvas');
+            let height = '400px';
+            if (settings.chartSize === 'small') height = '300px';
+            if (settings.chartSize === 'large') height = '500px';
+            charts.forEach(chart => chart.style.height = height);
+        }
+        
+        // Apply animations
+        if (settings.showAnimations === 'no') {
+            document.body.style.transition = 'none';
+            const charts = document.querySelectorAll('.chart-container');
+            charts.forEach(chart => chart.style.transition = 'none');
+        } else {
+            document.body.style.transition = '';
+            const charts = document.querySelectorAll('.chart-container');
+            charts.forEach(chart => chart.style.transition = '');
+        }
+    }
+    
+    // Reset to default settings
+    function resetSettings() {
+        localStorage.removeItem('appSettings');
+        loadSettings();
+        showToast('🔄 All settings reset to default!');
+    }
+    
+    // Show toast notification
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        toastMessage.innerText = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+    
+    // Event listeners
+    document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+    document.getElementById('resetSettingsBtn').addEventListener('click', resetSettings);
+    
+    document.getElementById('resetCounterBtn').addEventListener('click', () => {
+        localStorage.removeItem('predictionCount');
+        document.getElementById('currentCount').innerText = '0';
+        showToast('📊 Prediction history reset!');
+    });
+    
+    document.getElementById('clearAllDataBtn').addEventListener('click', () => {
+        if (confirm('⚠️ WARNING: This will delete all your settings and prediction history. Are you sure?')) {
+            localStorage.clear();
+            loadSettings();
+            showToast('🗑️ All data cleared successfully!');
+            setTimeout(() => location.reload(), 1500);
+        }
+    });
+    
+    document.getElementById('exportSettingsBtn').addEventListener('click', () => {
+        const settings = localStorage.getItem('appSettings');
+        const predictions = localStorage.getItem('predictionCount');
+        const exportData = {
+            settings: JSON.parse(settings || '{}'),
+            predictionCount: predictions || 0,
+            exportDate: new Date().toISOString()
+        };
+        
+        const dataStr = JSON.stringify(exportData, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `california_housing_settings_${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        showToast('📤 Settings exported successfully!');
+    });
+    
+    // Initialize
+    loadSettings();
+    applySettings();
+    
+    // Auto-refresh prediction count
+    setInterval(() => {
+        const count = localStorage.getItem('predictionCount') || 0;
+        document.getElementById('currentCount').innerText = count;
+    }, 1000);
+</script>
+
+<style>
+    button:hover, select:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+    }
+    
+    input[type="radio"] {
+        margin-right: 5px;
+        cursor: pointer;
+    }
+    
+    label {
+        cursor: pointer;
+    }
+    
+    #toast {
+        animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
+
 {% endblock %}

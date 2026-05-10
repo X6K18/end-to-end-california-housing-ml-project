@@ -18,32 +18,32 @@ class ModelManager:
     
     MODELS_CONFIG = {
         "linear_regression": {
-            "name": "📊 Linear Regression",
+            "name": "Linear Regression",
             "path": os.path.join(BASE_DIR, "models", "linear_regression_model", "linear_regression.pkl"),
             "scaler_path": os.path.join(BASE_DIR, "models", "linear_regression_model", "scaler.pkl"),
             "need_scaling": True,
-            "metrics": {"r2": 0.642, "rmse": 68324, "mae": 52118}
+            "metrics": {"r2": 0.5958, "rmse": 0.7294, "mae": 0.5272}
         },
         "random_forest": {
-            "name": "🌲 Random Forest",
+            "name": "Random Forest",
             "path": os.path.join(BASE_DIR, "models", "random_forest_model", "random_forest.pkl"),
             "scaler_path": None,
             "need_scaling": False,
-            "metrics": {"r2": 0.812, "rmse": 45200, "mae": 34500}
+            "metrics": {"r2": 0.8061, "rmse": 0.5045, "mae": 0.3370}
         },
         "xgboost": {
-            "name": "⚡ XGBoost",
+            "name": "XGBoost",
             "path": os.path.join(BASE_DIR, "models", "xgboost_model", "xgboost_model.pkl"),
             "scaler_path": None,
             "need_scaling": False,
-            "metrics": {"r2": 0.845, "rmse": 39800, "mae": 29800}
+            "metrics": {"r2": 0.8445, "rmse": 0.4518, "mae": 0.30}
         },
         "best_xgboost": {
-            "name": "🏆 Best XGBoost",
+            "name": "Best XGBoost",
             "path": os.path.join(BASE_DIR, "models", "best_xgboost", "best_xgboost_02.pkl"),
             "scaler_path": None,
             "need_scaling": False,
-            "metrics": {"r2": 0.873, "rmse": 36100, "mae": 27100}
+            "metrics": {"r2": 0.85, "rmse": 0.45, "mae": 0.29}
         }
     }
     

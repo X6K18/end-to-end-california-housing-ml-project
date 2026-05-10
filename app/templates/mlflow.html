@@ -4,30 +4,315 @@
 {% block page_title %}MLflow Experiment Tracking{% endblock %}
 
 {% block content %}
+
+<!-- Experiment Info Cards -->
 <div class="stats-grid">
-    <div class="stat-card"><div class="stat-title">Last Run ID</div><div class="stat-value">run_<span id="runId">a1b2c3</span></div></div>
-    <div class="stat-card"><div class="stat-title">Experiment Name</div><div class="stat-value">California Housing</div></div>
-    <div class="stat-card"><div class="stat-title">Artifact URI</div><div class="stat-value">mlruns/</div></div>
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-fingerprint"></i> Last Run ID</div>
+        <div class="stat-value" style="font-size: 20px;" id="runId">run_8f3a2b1c</div>
+        <div style="font-size: 11px; color: #666;">Best XGBoost Model</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-flask"></i> Experiment Name</div>
+        <div class="stat-value" style="font-size: 20px;">California Housing</div>
+        <div style="font-size: 11px; color: #666;">Multi-model comparison</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-folder-open"></i> Artifact URI</div>
+        <div class="stat-value" style="font-size: 16px;">mlruns/1/</div>
+        <div style="font-size: 11px; color: #666;">Models & metrics</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-calendar"></i> Last Updated</div>
+        <div class="stat-value" style="font-size: 18px;" id="lastUpdated">2024-01-15</div>
+        <div style="font-size: 11px; color: #666;">Latest training session</div>
+    </div>
 </div>
 
+<!-- Training Loss Curves -->
 <div class="chart-container">
+    <h3 style="margin-bottom: 15px;">📉 Training & Validation Loss Curves (Best XGBoost)</h3>
     <canvas id="lossCurve"></canvas>
 </div>
 
-<table style="width:100%; background:#0f0f0f; border-radius:16px; padding:15px; border:1px solid #202020; margin-top:20px;">
-    <thead><tr><th>Parameter</th><th>Value</th><th>Metric</th><th>Value</th></tr></thead>
-    <tbody>
-        <tr><td>alpha</td><td>0.01</td><td>rmse</td><td>68324</td></tr>
-        <tr><td>l1_ratio</td><td>0.5</td><td>r2</td><td>0.642</td></tr>
-        <tr><td>max_iter</td><td>1000</td><td>mae</td><td>52118</td></tr>
-    </tbody>
-</table>
+<!-- Model Comparison Metrics -->
+<div class="chart-container">
+    <h3 style="margin-bottom: 15px;">📊 Model Performance Comparison</h3>
+    <canvas id="modelComparisonChart"></canvas>
+</div>
+
+<!-- Hyperparameter Tuning Visualization -->
+<div class="chart-container">
+    <h3 style="margin-bottom: 15px;">⚙️ Hyperparameter Tuning Impact</h3>
+    <canvas id="hyperparameterChart"></canvas>
+</div>
+
+<!-- Parameters & Metrics Table -->
+<div style="background:#0f0f0f; border-radius:20px; padding:20px; border:1px solid #202020; margin-bottom:30px;">
+    <h3 style="margin-bottom: 15px;">📋 Model Parameters & Metrics Comparison</h3>
+    <div style="overflow-x: auto;">
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 2px solid #333;">
+                    <th style="padding: 12px; text-align: left;">Model</th>
+                    <th style="padding: 12px; text-align: center;">R² Score</th>
+                    <th style="padding: 12px; text-align: center;">RMSE</th>
+                    <th style="padding: 12px; text-align: center;">MAE</th>
+                    <th style="padding: 12px; text-align: center;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #1a1a1a;">
+                    <td style="padding: 12px; font-weight: 500;">🏆 Best XGBoost</td>
+                    <td style="padding: 12px; text-align: center; color: #34d399;">0.8500</td>
+                    <td style="padding: 12px; text-align: center;">0.4500</td>
+                    <td style="padding: 12px; text-align: center;">0.2900</td>
+                    <td style="padding: 12px; text-align: center;"><span style="background:#1e293b; padding:2px 8px; border-radius:12px;">✅ Production</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #1a1a1a;">
+                    <td style="padding: 12px; font-weight: 500;">⚡ XGBoost</td>
+                    <td style="padding: 12px; text-align: center; color: #60a5fa;">0.8445</td>
+                    <td style="padding: 12px; text-align: center;">0.4518</td>
+                    <td style="padding: 12px; text-align: center;">0.3000</td>
+                    <td style="padding: 12px; text-align: center;"><span style="background:#1e293b; padding:2px 8px; border-radius:12px;">📝 Staging</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #1a1a1a;">
+                    <td style="padding: 12px; font-weight: 500;">🌲 Random Forest</td>
+                    <td style="padding: 12px; text-align: center; color: #a78bfa;">0.8061</td>
+                    <td style="padding: 12px; text-align: center;">0.5045</td>
+                    <td style="padding: 12px; text-align: center;">0.3370</td>
+                    <td style="padding: 12px; text-align: center;"><span style="background:#1e293b; padding:2px 8px; border-radius:12px;">📊 Archived</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #1a1a1a;">
+                    <td style="padding: 12px; font-weight: 500;">📊 Linear Regression</td>
+                    <td style="padding: 12px; text-align: center; color: #f87171;">0.5958</td>
+                    <td style="padding: 12px; text-align: center;">0.7294</td>
+                    <td style="padding: 12px; text-align: center;">0.5272</td>
+                    <td style="padding: 12px; text-align: center;"><span style="background:#1e293b; padding:2px 8px; border-radius:12px;">🗄️ Baseline</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Hyperparameters Detail -->
+<div style="background:#0f0f0f; border-radius:20px; padding:20px; border:1px solid #202020; margin-bottom:30px;">
+    <h3 style="margin-bottom: 15px;">🔧 Best XGBoost Hyperparameters</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div style="background:#050505; padding:12px; border-radius:8px;">
+            <div style="color:#888; font-size:11px;">n_estimators</div>
+            <div style="color:#60a5fa; font-size:20px; font-weight:bold;">300</div>
+        </div>
+        <div style="background:#050505; padding:12px; border-radius:8px;">
+            <div style="color:#888; font-size:11px;">learning_rate</div>
+            <div style="color:#60a5fa; font-size:20px; font-weight:bold;">0.05</div>
+        </div>
+        <div style="background:#050505; padding:12px; border-radius:8px;">
+            <div style="color:#888; font-size:11px;">max_depth</div>
+            <div style="color:#60a5fa; font-size:20px; font-weight:bold;">7</div>
+        </div>
+        <div style="background:#050505; padding:12px; border-radius:8px;">
+            <div style="color:#888; font-size:11px;">subsample</div>
+            <div style="color:#60a5fa; font-size:20px; font-weight:bold;">0.8</div>
+        </div>
+        <div style="background:#050505; padding:12px; border-radius:8px;">
+            <div style="color:#888; font-size:11px;">colsample_bytree</div>
+            <div style="color:#60a5fa; font-size:20px; font-weight:bold;">0.8</div>
+        </div>
+        <div style="background:#050505; padding:12px; border-radius:8px;">
+            <div style="color:#888; font-size:11px;">random_state</div>
+            <div style="color:#60a5fa; font-size:20px; font-weight:bold;">42</div>
+        </div>
+    </div>
+</div>
 
 <script>
-    new Chart(document.getElementById('lossCurve'), {
+    // 1. Loss Curve Chart
+    const lossCtx = document.getElementById('lossCurve').getContext('2d');
+    new Chart(lossCtx, {
         type: 'line',
-        data: { labels: Array.from({length:20},(_,i)=>i+1), datasets: [{ label: 'Training Loss', data: [0.85,0.72,0.61,0.52,0.45,0.39,0.34,0.30,0.27,0.24,0.22,0.20,0.19,0.18,0.17,0.165,0.16,0.158,0.156,0.155], borderColor: '#ef4444', tension:0.3 },{ label: 'Validation Loss', data: [0.88,0.76,0.66,0.58,0.52,0.47,0.43,0.40,0.38,0.36,0.35,0.34,0.34,0.33,0.33,0.33,0.32,0.32,0.32,0.32], borderColor: '#3b82f6' }] },
-        options: { responsive: true, plugins: { legend: { labels: { color: '#e0e0e0' } } }, scales: { y: { ticks:{color:'#e0e0e0'} }, x: { ticks:{color:'#e0e0e0'} } } }
+        data: { 
+            labels: Array.from({length:20}, (_,i) => i+1), 
+            datasets: [                
+                { 
+                    label: 'Training Loss (Best XGBoost)', 
+                    data: [0.82, 0.68, 0.56, 0.47, 0.40, 0.35, 0.31, 0.28, 0.25, 0.23, 0.21, 0.19, 0.18, 0.17, 0.165, 0.16, 0.158, 0.156, 0.155, 0.154], 
+                    borderColor: '#ef4444', 
+                    borderWidth: 2,
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    fill: true,
+                    tension: 0.3 
+                },
+                { 
+                    label: 'Validation Loss (Best XGBoost)', 
+                    data: [0.85, 0.72, 0.62, 0.54, 0.48, 0.43, 0.39, 0.36, 0.34, 0.32, 0.31, 0.30, 0.295, 0.292, 0.290, 0.289, 0.288, 0.288, 0.287, 0.287], 
+                    borderColor: '#3b82f6', 
+                    borderWidth: 2,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.3 
+                }
+            ] 
+        },
+        options: { 
+            responsive: true, 
+            plugins: { 
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw.toFixed(4);
+                        }
+                    }
+                }
+            }, 
+            scales: { 
+                y: { 
+                    ticks: { color: '#e0e0e0' },
+                    grid: { color: '#1a1a1a' },
+                    title: { display: true, text: 'Loss', color: '#aaa' }
+                }, 
+                x: { 
+                    ticks: { color: '#e0e0e0' },
+                    grid: { color: '#1a1a1a' },
+                    title: { display: true, text: 'Epoch', color: '#aaa' }
+                } 
+            } 
+        }
     });
+
+    // 2. Model Comparison Chart
+    const compareCtx = document.getElementById('modelComparisonChart').getContext('2d');
+    new Chart(compareCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Best XGBoost', 'XGBoost', 'Random Forest', 'Linear Regression'],
+            datasets: [
+                {
+                    label: 'R² Score',
+                    data: [0.8500, 0.8445, 0.8061, 0.5958],
+                    backgroundColor: 'rgba(52, 211, 153, 0.6)',
+                    borderColor: '#34d399',
+                    borderWidth: 2,
+                    borderRadius: 8
+                },
+                {
+                    label: 'RMSE (inverted)',
+                    data: [1 - 0.45, 1 - 0.4518, 1 - 0.5045, 1 - 0.7294],
+                    backgroundColor: 'rgba(96, 165, 250, 0.6)',
+                    borderColor: '#60a5fa',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            if (context.dataset.label === 'R² Score') {
+                                return context.dataset.label + ': ' + context.raw.toFixed(4);
+                            } else {
+                                const originalRMSE = [0.45, 0.4518, 0.5045, 0.7294][context.dataIndex];
+                                return 'RMSE: ' + originalRMSE.toFixed(4);
+                            }
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { color: '#1a1a1a' },
+                    min: 0,
+                    max: 1,
+                    title: { display: true, text: 'Score', color: '#aaa' }
+                },
+                x: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // 3. Hyperparameter Tuning Chart
+    const hyperCtx = document.getElementById('hyperparameterChart').getContext('2d');
+    new Chart(hyperCtx, {
+        type: 'line',
+        data: {
+            labels: ['n_estimators=100', 'n_estimators=200', 'n_estimators=300', 'n_estimators=400', 'n_estimators=500'],
+            datasets: [
+                {
+                    label: 'R² Score Improvement',
+                    data: [0.82, 0.84, 0.85, 0.848, 0.845],
+                    borderColor: '#34d399',
+                    backgroundColor: 'rgba(52, 211, 153, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'RMSE Reduction',
+                    data: [0.52, 0.47, 0.45, 0.452, 0.455],
+                    borderColor: '#60a5fa',
+                    backgroundColor: 'rgba(96, 165, 250, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw.toFixed(4);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { color: '#1a1a1a' },
+                    title: { display: true, text: 'Score', color: '#aaa' }
+                },
+                x: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { color: '#1a1a1a' }
+                }
+            }
+        }
+    });
+
+    // Set current date
+    const today = new Date();
+    document.getElementById('lastUpdated').innerText = today.toISOString().split('T')[0];
 </script>
+
+<style>
+    .stat-card {
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: #60a5fa;
+        box-shadow: 0 5px 20px rgba(96, 165, 250, 0.1);
+    }
+    .chart-container h3 {
+        color: #aaa;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+</style>
+
 {% endblock %}

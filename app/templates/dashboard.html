@@ -6,42 +6,152 @@
 {% block content %}
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-title"><i class="fas fa-dollar-sign"></i> Average Price</div>
+        <div class="stat-title"><i class="fas fa-chart-line"></i> Best Model R² Score</div>
+        <div class="stat-value" id="bestR2">0.8500</div>
+        <div style="font-size: 12px; color: #888;" id="bestModelName">Best XGBoost</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-tree"></i> Random Forest R²</div>
+        <div class="stat-value" id="rfR2">0.8061</div>
+        <div style="font-size: 12px; color: #888;">🌳 No scaling needed</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-bolt"></i> XGBoost R²</div>
+        <div class="stat-value" id="xgbR2">0.8445</div>
+        <div style="font-size: 12px; color: #888;">⚡ Fast & accurate</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-chart-simple"></i> Linear Regression R²</div>
+        <div class="stat-value" id="lrR2">0.5958</div>
+        <div style="font-size: 12px; color: #888;">📊 Needs scaling</div>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-title"><i class="fas fa-dollar-sign"></i> Avg House Price</div>
         <div class="stat-value" id="avgPrice">$206,855</div>
+        <div style="font-size: 12px; color: #888;">California median</div>
     </div>
     <div class="stat-card">
         <div class="stat-title"><i class="fas fa-home"></i> Total Districts</div>
         <div class="stat-value">20,640</div>
+        <div style="font-size: 12px; color: #888;">Housing blocks</div>
     </div>
     <div class="stat-card">
-        <div class="stat-title"><i class="fas fa-chart-line"></i> Model R² Score</div>
-        <div class="stat-value">0.642</div>
+        <div class="stat-title"><i class="fas fa-chart-line"></i> Best Model RMSE</div>
+        <div class="stat-value" id="bestRMSE">0.4500</div>
+        <div style="font-size: 12px; color: #888;">Lower is better</div>
     </div>
     <div class="stat-card">
         <div class="stat-title"><i class="fas fa-check-circle"></i> Predictions Today</div>
         <div class="stat-value" id="predictionsCount">0</div>
+        <div style="font-size: 12px; color: #888;">Session total</div>
     </div>
 </div>
 
+<!-- Model Performance Comparison Chart -->
 <div class="chart-container">
+    <h3 style="margin-bottom: 15px;">📊 Model Performance Comparison</h3>
+    <canvas id="modelPerformanceChart"></canvas>
+</div>
+
+<!-- Price Distribution Chart -->
+<div class="chart-container">
+    <h3 style="margin-bottom: 15px;">💰 House Price Distribution</h3>
     <canvas id="priceDistributionChart"></canvas>
 </div>
 
+<!-- Feature Importance Chart -->
 <div class="chart-container">
+    <h3 style="margin-bottom: 15px;">🔍 Feature Importance (Best XGBoost)</h3>
     <canvas id="featureImportanceChart"></canvas>
 </div>
 
+<!-- Error Metrics Comparison -->
+<div class="chart-container">
+    <h3 style="margin-bottom: 15px;">📉 Error Metrics Comparison (Lower is Better)</h3>
+    <canvas id="errorMetricsChart"></canvas>
+</div>
+
 <script>
-    // Price Distribution Chart
+    // Model performance data từ prediction_service.py
+    const modelData = {
+        'Best XGBoost': { r2: 0.8500, rmse: 0.4500, mae: 0.2900, icon: '🏆' },
+        'XGBoost': { r2: 0.8445, rmse: 0.4518, mae: 0.3000, icon: '⚡' },
+        'Random Forest': { r2: 0.8061, rmse: 0.5045, mae: 0.3370, icon: '🌲' },
+        'Linear Regression': { r2: 0.5958, rmse: 0.7294, mae: 0.5272, icon: '📊' }
+    };
+
+    // 1. Model Performance Comparison Chart (R²)
+    const ctx1 = document.getElementById('modelPerformanceChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(modelData),
+            datasets: [{
+                label: 'R² Score (higher is better)',
+                data: Object.values(modelData).map(m => m.r2),
+                backgroundColor: [
+                    'rgba(52, 211, 153, 0.7)',
+                    'rgba(96, 165, 250, 0.7)',
+                    'rgba(139, 92, 246, 0.7)',
+                    'rgba(248, 113, 113, 0.7)'
+                ],
+                borderColor: [
+                    '#34d399',
+                    '#60a5fa',
+                    '#a78bfa',
+                    '#f87171'
+                ],
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const model = Object.keys(modelData)[context.dataIndex];
+                            const data = modelData[model];
+                            return [
+                                `R²: ${data.r2.toFixed(4)}`,
+                                `RMSE: ${data.rmse.toFixed(4)}`,
+                                `MAE: ${data.mae.toFixed(4)}`
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { color: '#1a1a1a' },
+                    min: 0,
+                    max: 1,
+                    title: { display: true, text: 'R² Score', color: '#aaa' }
+                },
+                x: {
+                    ticks: { color: '#e0e0e0', font: { weight: 'bold' } },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // 2. Price Distribution Chart
     const priceCtx = document.getElementById('priceDistributionChart').getContext('2d');
     new Chart(priceCtx, {
         type: 'bar',
         data: {
-            labels: ['Min', 'Q1', 'Median', 'Q3', 'Max'],
+            labels: ['Minimum', 'Lower Quartile', 'Median', 'Upper Quartile', 'Maximum'],
             datasets: [{
-                label: 'House Prices (USD)',
+                label: 'House Prices',
                 data: [50000, 120000, 180000, 265000, 500001],
-                backgroundColor: 'rgba(96,165,250,0.6)',
+                backgroundColor: 'rgba(96, 165, 250, 0.6)',
                 borderColor: '#60a5fa',
                 borderWidth: 2,
                 borderRadius: 8
@@ -51,25 +161,36 @@
             responsive: true,
             plugins: {
                 legend: { labels: { color: '#e0e0e0' } },
-                tooltip: { callbacks: { label: (ctx) => '$' + ctx.raw.toLocaleString() } }
+                tooltip: { 
+                    callbacks: { 
+                        label: (ctx) => '$' + ctx.raw.toLocaleString() 
+                    } 
+                }
             },
             scales: {
-                y: { ticks: { color: '#e0e0e0', callback: (v) => '$' + (v/1000) + 'K' }, grid: { color: '#1a1a1a' } },
-                x: { ticks: { color: '#e0e0e0' }, grid: { display: false } }
+                y: { 
+                    ticks: { color: '#e0e0e0', callback: (v) => '$' + (v/1000).toFixed(0) + 'K' }, 
+                    grid: { color: '#1a1a1a' },
+                    title: { display: true, text: 'Price (USD)', color: '#aaa' }
+                },
+                x: { 
+                    ticks: { color: '#e0e0e0' }, 
+                    grid: { display: false } 
+                }
             }
         }
     });
 
-    // Feature Importance Chart
+    // 3. Feature Importance Chart (horizontal bar)
     const featureCtx = document.getElementById('featureImportanceChart').getContext('2d');
     new Chart(featureCtx, {
         type: 'bar',
         data: {
-            labels: ['MedInc', 'AveRooms', 'HouseAge', 'Population', 'Latitude', 'Longitude', 'AveBedrms', 'AveOccup'],
+            labels: ['Median Income', 'Avg Rooms', 'House Age', 'Population', 'Latitude', 'Longitude', 'Avg Bedrooms', 'Avg Occupancy'],
             datasets: [{
                 label: 'Feature Importance',
-                data: [0.52, 0.18, 0.12, 0.08, 0.05, 0.03, 0.02, 0.01],
-                backgroundColor: 'rgba(139,92,246,0.6)',
+                data: [0.55, 0.20, 0.10, 0.05, 0.04, 0.03, 0.02, 0.01],
+                backgroundColor: 'rgba(139, 92, 246, 0.6)',
                 borderColor: '#a78bfa',
                 borderWidth: 2,
                 borderRadius: 8
@@ -78,16 +199,105 @@
         options: {
             responsive: true,
             indexAxis: 'y',
-            plugins: { legend: { labels: { color: '#e0e0e0' } } },
+            plugins: { 
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: { 
+                    callbacks: { 
+                        label: (ctx) => 'Importance: ' + (ctx.raw * 100).toFixed(1) + '%' 
+                    } 
+                }
+            },
             scales: {
-                x: { ticks: { color: '#e0e0e0' }, grid: { color: '#1a1a1a' } },
-                y: { ticks: { color: '#e0e0e0' }, grid: { display: false } }
+                x: { 
+                    ticks: { color: '#e0e0e0', callback: (v) => (v * 100).toFixed(0) + '%' }, 
+                    grid: { color: '#1a1a1a' },
+                    title: { display: true, text: 'Importance (%)', color: '#aaa' }
+                },
+                y: { 
+                    ticks: { color: '#e0e0e0' }, 
+                    grid: { display: false } 
+                }
             }
         }
     });
 
-    // Simulate prediction count from localStorage
+    // 4. Error Metrics Comparison Chart
+    const ctx4 = document.getElementById('errorMetricsChart').getContext('2d');
+    new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(modelData),
+            datasets: [
+                {
+                    label: 'RMSE (lower is better)',
+                    data: Object.values(modelData).map(m => m.rmse),
+                    backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    borderRadius: 8
+                },
+                {
+                    label: 'MAE (lower is better)',
+                    data: Object.values(modelData).map(m => m.mae),
+                    backgroundColor: 'rgba(52, 211, 153, 0.6)',
+                    borderColor: '#34d399',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw.toFixed(4);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { color: '#1a1a1a' },
+                    title: { display: true, text: 'Error Value', color: '#aaa' }
+                },
+                x: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // Update prediction count from localStorage
     let count = localStorage.getItem('predictionCount') || 0;
     document.getElementById('predictionsCount').innerText = count;
+
+    // Auto-refresh prediction count every second
+    setInterval(() => {
+        let newCount = localStorage.getItem('predictionCount') || 0;
+        document.getElementById('predictionsCount').innerText = newCount;
+    }, 1000);
 </script>
+
+<style>
+    .stat-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: #60a5fa;
+        box-shadow: 0 5px 20px rgba(96, 165, 250, 0.2);
+    }
+    .chart-container h3 {
+        color: #aaa;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+</style>
 {% endblock %}

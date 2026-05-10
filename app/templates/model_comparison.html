@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+
+{% block title %}Model Comparison{% endblock %}
+{% block page_title %}Model Performance Comparison{% endblock %}
+
+{% block content %}
+
+<!-- Model Metrics Cards -->
+<div class="stats-grid">
+    {% for model_key, model in models.items() %}
+    <div class="stat-card" style="cursor: pointer;" onclick="selectModel('{{ model_key }}')">
+        <div class="stat-title">{{ model.name }}</div>
+        <div class="stat-value">R²: {{ "%.4f"|format(model.metrics.r2) }}</div>
+        <div style="font-size: 12px; color: #888; margin-top: 10px;">
+            📉 RMSE: {{ "%.4f"|format(model.metrics.rmse) }}<br>
+            📊 MAE: {{ "%.4f"|format(model.metrics.mae) }}
+        </div>
+        <div style="margin-top: 10px;">
+            {% if model.need_scaling %}
+            <span style="background:#1e293b; padding:2px 8px; border-radius:12px; font-size:10px;">🔵 Needs Scaling</span>
+            {% else %}
+            <span style="background:#0f172a; padding:2px 8px; border-radius:12px; font-size:10px;">🌳 No Scaling</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Bar Chart: R² Comparison -->
+<div class="chart-container">
+    <h3 style="margin-bottom: 15px;">📈 R² Score Comparison (Higher is Better)</h3>
+    <canvas id="r2ComparisonChart"></canvas>
+</div>
+
+<!-- Bar Chart: RMSE & MAE Comparison -->
+<div class="chart-container">
+    <h3 style="margin-bottom: 15px;">📊 Error Metrics Comparison (Lower is Better)</h3>
+    <canvas id="errorComparisonChart"></canvas>
+</div>
+
+<!-- Radar Chart: Multi-metric Comparison -->
+<div class="chart-container">
+    <h3 style="margin-bottom: 15px;">🎯 Multi-metric Radar Chart</h3>
+    <canvas id="radarChart"></canvas>
+</div>
+
+<!-- Feature Importance Comparison -->
+<div class="chart-container">
+    <h3 style="margin-bottom: 15px;">🔍 Feature Importance Comparison</h3>
+    <canvas id="featureComparisonChart"></canvas>
+</div>
+
+<!-- Summary Table -->
+<div style="background:#0f0f0f; border-radius:20px; padding:20px; border:1px solid #202020; margin-bottom:30px;">
+    <h3 style="margin-bottom: 15px;">📋 Detailed Model Summary</h3>
+    <div style="overflow-x: auto;">
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 2px solid #333;">
+                    <th style="padding: 12px; text-align: left;">Model</th>
+                    <th style="padding: 12px; text-align: center;">R² Score</th>
+                    <th style="padding: 12px; text-align: center;">RMSE</th>
+                    <th style="padding: 12px; text-align: center;">MAE</th>
+                    <th style="padding: 12px; text-align: center;">Scaling Required</th>
+                    <th style="padding: 12px; text-align: center;">Rank</th>
+                  </tr>
+            </thead>
+            <tbody>
+                {% set sorted_models = models.items()|sort(attribute='1.metrics.r2', reverse=true) %}
+                {% for model_key, model in sorted_models %}
+                <tr style="border-bottom: 1px solid #1a1a1a;">
+                    <td style="padding: 12px; font-weight: 500;">{{ model.name }}</td>
+                    <td style="padding: 12px; text-align: center;">
+                        <span style="color: {% if model.metrics.r2 > 0.8 %}#34d399{% elif model.metrics.r2 > 0.7 %}#f59e0b{% else %}#ef4444{% endif %}; font-weight: bold;">
+                            {{ "%.4f"|format(model.metrics.r2) }}
+                        </span>
+                    </td>
+                    <td style="padding: 12px; text-align: center;">{{ "%.4f"|format(model.metrics.rmse) }}</td>
+                    <td style="padding: 12px; text-align: center;">{{ "%.4f"|format(model.metrics.mae) }}</td>
+                    <td style="padding: 12px; text-align: center;">
+                        {% if model.need_scaling %}
+                        <span style="color:#60a5fa;">✅ Required</span>
+                        {% else %}
+                        <span style="color:#34d399;">❌ Not needed</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; text-align: center;">
+                        {% if loop.index == 1 %}
+                        <span style="font-size: 24px;">🥇</span>
+                        {% elif loop.index == 2 %}
+                        <span style="font-size: 24px;">🥈</span>
+                        {% elif loop.index == 3 %}
+                        <span style="font-size: 24px;">🥉</span>
+                        {% else %}
+                        <span style="font-size: 18px;">#{{ loop.index }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Recommendation Box -->
+<div style="background: linear-gradient(135deg, #0f172a, #1e1b4b); border-radius:20px; padding:25px; border:1px solid #334155; margin-bottom:30px;">
+    <h3 style="margin-bottom: 10px;">💡 Model Recommendation</h3>
+    {% set best_model = models.items()|sort(attribute='1.metrics.r2', reverse=true)|first %}
+    <p style="color: #aaa; line-height: 1.6;">
+        🏆 <strong style="color: #34d399;">{{ best_model[1].name }}</strong> performs best with 
+        <strong>R² = {{ "%.4f"|format(best_model[1].metrics.r2) }}</strong>, 
+        RMSE = <strong>{{ "%.4f"|format(best_model[1].metrics.rmse) }}</strong>, 
+        and MAE = <strong>{{ "%.4f"|format(best_model[1].metrics.mae) }}</strong>.
+    </p>
+    <p style="color: #aaa; margin-top: 10px;">
+        {% if not best_model[1].need_scaling %}
+        ✅ This model does NOT require feature scaling, making it faster and simpler to deploy.
+        {% else %}
+        ⚠️ This model requires feature scaling for optimal performance.
+        {% endif %}
+    </p>
+</div>
+
+<script>
+    // Data from Flask (đúng số liệu từ prediction_service.py)
+    const modelsData = {
+        {% for model_key, model in models.items() %}
+        "{{ model_key }}": {
+            name: "{{ model.name }}",
+            r2: {{ model.metrics.r2 }},
+            rmse: {{ model.metrics.rmse }},
+            mae: {{ model.metrics.mae }},
+            need_scaling: {{ model.need_scaling|lower }}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    };
+
+    // Bar Chart: R² Comparison
+    const ctx1 = document.getElementById('r2ComparisonChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: Object.values(modelsData).map(m => m.name),
+            datasets: [{
+                label: 'R² Score (higher is better)',
+                data: Object.values(modelsData).map(m => m.r2),
+                backgroundColor: 'rgba(96, 165, 250, 0.6)',
+                borderColor: '#60a5fa',
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'R²: ' + context.raw.toFixed(4);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { color: '#1a1a1a' },
+                    min: 0,
+                    max: 1,
+                    title: { display: true, text: 'R² Score', color: '#aaa' }
+                },
+                x: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // Bar Chart: RMSE & MAE Comparison
+    const ctx2 = document.getElementById('errorComparisonChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: Object.values(modelsData).map(m => m.name),
+            datasets: [
+                {
+                    label: 'RMSE (lower is better)',
+                    data: Object.values(modelsData).map(m => m.rmse),
+                    backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    borderRadius: 8
+                },
+                {
+                    label: 'MAE (lower is better)',
+                    data: Object.values(modelsData).map(m => m.mae),
+                    backgroundColor: 'rgba(52, 211, 153, 0.6)',
+                    borderColor: '#34d399',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw.toFixed(4);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { color: '#1a1a1a' },
+                    title: { display: true, text: 'Error Value', color: '#aaa' }
+                },
+                x: {
+                    ticks: { color: '#e0e0e0' },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // Radar Chart: Multi-metric Comparison
+    const ctx3 = document.getElementById('radarChart').getContext('2d');
+    
+    // Normalize values for radar chart
+    const maxRmse = Math.max(...Object.values(modelsData).map(m => m.rmse));
+    const maxMae = Math.max(...Object.values(modelsData).map(m => m.mae));
+    
+    new Chart(ctx3, {
+        type: 'radar',
+        data: {
+            labels: ['R² Score', 'RMSE (inverted)', 'MAE (inverted)', 'Speed', 'Memory Efficiency'],
+            datasets: Object.entries(modelsData).map(([key, model], index) => ({
+                label: model.name,
+                data: [
+                    model.r2,
+                    1 - (model.rmse / maxRmse),
+                    1 - (model.mae / maxMae),
+                    model.need_scaling ? 0.7 : 0.95,
+                    model.need_scaling ? 0.6 : 0.9
+                ],
+                backgroundColor: `hsla(${index * 90}, 70%, 50%, 0.2)`,
+                borderColor: `hsl(${index * 90}, 70%, 60%)`,
+                borderWidth: 2,
+                pointBackgroundColor: `hsl(${index * 90}, 70%, 60%)`
+            }))
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw.toFixed(4);
+                        }
+                    }
+                }
+            },
+            scales: {
+                r: {
+                    ticks: { color: '#e0e0e0', backdropColor: 'transparent' },
+                    grid: { color: '#1a1a1a' },
+                    angleLines: { color: '#1a1a1a' },
+                    min: 0,
+                    max: 1,
+                    title: { display: true, text: 'Normalized Score (1 = best)', color: '#aaa' }
+                }
+            }
+        }
+    });
+
+    // Feature Importance Comparison
+    const ctx4 = document.getElementById('featureComparisonChart').getContext('2d');
+    new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: ['Median Income', 'Avg Rooms', 'House Age', 'Latitude', 'Population', 'Longitude', 'Avg Bedrooms', 'Avg Occupancy'],
+            datasets: [
+                {
+                    label: 'Linear Regression',
+                    data: [0.52, 0.18, 0.12, 0.05, 0.08, 0.03, 0.01, 0.01],
+                    backgroundColor: 'rgba(96, 165, 250, 0.5)',
+                    borderColor: '#60a5fa',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Random Forest',
+                    data: [0.48, 0.22, 0.14, 0.06, 0.05, 0.03, 0.01, 0.01],
+                    backgroundColor: 'rgba(52, 211, 153, 0.5)',
+                    borderColor: '#34d399',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Best XGBoost',
+                    data: [0.55, 0.20, 0.10, 0.05, 0.04, 0.03, 0.02, 0.01],
+                    backgroundColor: 'rgba(139, 92, 246, 0.5)',
+                    borderColor: '#a78bfa',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: '#e0e0e0' } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + (context.raw * 100).toFixed(1) + '%';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: { color: '#e0e0e0', callback: (v) => (v * 100).toFixed(0) + '%' },
+                    grid: { color: '#1a1a1a' },
+                    title: { display: true, text: 'Importance', color: '#aaa' }
+                },
+                x: {
+                    ticks: { color: '#e0e0e0', rotation: 45 },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // Function to handle card click
+    function selectModel(modelKey) {
+        const model = modelsData[modelKey];
+        alert(`📊 ${model.name}\n\n` +
+              `R² Score: ${model.r2.toFixed(4)}\n` +
+              `RMSE: ${model.rmse.toFixed(4)}\n` +
+              `MAE: ${model.mae.toFixed(4)}\n` +
+              `Scaling Required: ${model.need_scaling ? 'Yes' : 'No'}`);
+    }
+</script>
+
+<style>
+    .stat-card {
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: #60a5fa;
+        box-shadow: 0 5px 20px rgba(96, 165, 250, 0.1);
+    }
+    table th, table td {
+        text-align: center;
+    }
+    table td:first-child, table th:first-child {
+        text-align: left;
+    }
+</style>
+
+{% endblock %}

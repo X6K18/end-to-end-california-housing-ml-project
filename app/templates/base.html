@@ -135,17 +135,99 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* User Avatar Dropdown */
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid #334155;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+            border-color: #60a5fa;
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.3);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 55px;
+            background: #0f0f0f;
+            min-width: 260px;
+            border-radius: 12px;
+            border: 1px solid #202020;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .user-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-header {
+            padding: 15px;
+            border-bottom: 1px solid #1a1a1a;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+        }
+
+        .dropdown-header h4 {
+            color: #60a5fa;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .dropdown-header p {
+            color: #888;
+            font-size: 11px;
+        }
+
+        .dropdown-item {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #e0e0e0;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .dropdown-item:hover {
+            background: #1a1a1a;
+            color: #60a5fa;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            font-size: 14px;
+            color: #60a5fa;
+        }
+
+        .logout-btn {
+            color: #ef4444;
+        }
+
+        .logout-btn i {
+            color: #ef4444;
         }
 
         /* Cards Grid */
@@ -209,6 +291,9 @@
             }
             .main-content {
                 margin-left: 80px;
+            }
+            .dropdown-content {
+                right: -50px;
             }
         }
 
@@ -275,6 +360,11 @@
                         <i class="fas fa-cog"></i> <span> Settings</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('about.about') }}" class="nav-link {% if active_page == 'about' %}active{% endif %}">
+                        <i class="fas fa-user-circle"></i> <span> About</span>
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -284,17 +374,124 @@
                 <div class="page-title">{% block page_title %}Dashboard{% endblock %}</div>
                 <div class="user-info">
                     <span><i class="fas fa-bell"></i></span>
-                    <div class="user-avatar">ML</div>
+                    
+                    <!-- User Dropdown với thông tin cá nhân -->
+                    <div class="user-dropdown">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="dropdown-content">
+                            <div class="dropdown-header">
+                                <h4><i class="fas fa-user-circle"></i> Phan Trong Nguyen</h4>
+                                <p><i class="fas fa-code-branch"></i> X6K18 | Data Science</p>
+                            </div>
+                            <a href="mailto:pn629503@gmail.com" class="dropdown-item" target="_blank">
+                                <i class="fas fa-envelope"></i>
+                                <span>pn629503@gmail.com</span>
+                            </a>
+                            <a href="https://github.com/X6K18" class="dropdown-item" target="_blank">
+                                <i class="fab fa-github"></i>
+                                <span>github.com/X6K18</span>
+                            </a>
+                            <a href="{{ url_for('about.about') }}" class="dropdown-item">
+                                <i class="fas fa-info-circle"></i>
+                                <span>About & Profile</span>
+                            </a>
+                            <a href="{{ url_for('settings.settings') }}" class="dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <div class="dropdown-item logout-btn" onclick="showToast('👋 Thanks for using CalHousing!')">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Sign Out</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {% block content %}{% endblock %}
 
             <div class="footer">
-                POWERED BY FLASK & MACHINE LEARNING | CALIFORNIA HOUSING
+                <i class="fas fa-copyright"></i> 2026 Phan Trong Nguyen (X6K18) | Powered by Flask & Machine Learning | California Housing
             </div>
         </div>
     </div>
+
+    <script>
+        // Toast notification function
+        function showToast(message) {
+            // Create toast element if not exists
+            let toast = document.getElementById('customToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'customToast';
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.right = '20px';
+                toast.style.backgroundColor = '#0f172a';
+                toast.style.border = '1px solid #334155';
+                toast.style.borderRadius = '12px';
+                toast.style.padding = '12px 20px';
+                toast.style.color = '#e0e0e0';
+                toast.style.zIndex = '1000';
+                toast.style.fontSize = '14px';
+                toast.style.animation = 'slideIn 0.3s ease';
+                document.body.appendChild(toast);
+                
+                // Add animation style
+                if (!document.querySelector('#toastStyle')) {
+                    const style = document.createElement('style');
+                    style.id = 'toastStyle';
+                    style.textContent = `
+                        @keyframes slideIn {
+                            from { transform: translateX(100%); opacity: 0; }
+                            to { transform: translateX(0); opacity: 1; }
+                        }
+                        @keyframes fadeOut {
+                            from { opacity: 1; }
+                            to { opacity: 0; }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            }
+            
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                    toast.style.animation = 'slideIn 0.3s ease';
+                }, 300);
+            }, 3000);
+        }
+        
+        // Update prediction count display
+        function updatePredictionCount() {
+            const count = localStorage.getItem('predictionCount') || 0;
+            const countElements = document.querySelectorAll('.prediction-count');
+            countElements.forEach(el => el.textContent = count);
+        }
+        
+        // Run on load
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePredictionCount();
+            
+            // Optional: Add click handler for sign out
+            const signOutBtn = document.querySelector('.logout-btn');
+            if (signOutBtn) {
+                signOutBtn.addEventListener('click', function() {
+                    localStorage.clear();
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

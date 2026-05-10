@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}About & Owner{% endblock %}
+{% block page_title %}About & Developer Info{% endblock %}
+
+{% block content %}
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+    
+    <!-- Owner Information Card -->
+    <div style="background:#0f0f0f; border-radius:20px; padding:30px; border:1px solid #202020;">
+        <div style="text-align: center; margin-bottom: 25px;">
+            <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #60a5fa, #a78bfa); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-user-circle" style="font-size: 80px; color: white;"></i>
+            </div>
+            <h2 style="color: #60a5fa;">Phan Trong Nguyen</h2>
+            <p style="color: #888;">Data Science</p>
+        </div>
+        
+        <div style="border-top: 1px solid #1a1a1a; padding-top: 20px;">
+            <h3 style="margin-bottom: 15px; color: #34d399;">
+                <i class="fas fa-address-card"></i> Contact Information
+            </h3>
+            
+            <div style="margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px; background: #050505; border-radius: 10px;">
+                    <i class="fas fa-envelope" style="color: #60a5fa; width: 25px;"></i>
+                    <div>
+                        <div style="font-size: 11px; color: #666;">Email</div>
+                        <a href="mailto:pn629503@gmail.com" style="color: #e0e0e0; text-decoration: none;">pn629503@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px; background: #050505; border-radius: 10px;">
+                    <i class="fab fa-github" style="color: #a78bfa; width: 25px;"></i>
+                    <div>
+                        <div style="font-size: 11px; color: #666;">GitHub</div>
+                        <a href="https://github.com/X6K18" target="_blank" style="color: #e0e0e0; text-decoration: none;">github.com/X6K18</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px; background: #050505; border-radius: 10px;">
+                    <i class="fas fa-code-branch" style="color: #f59e0b; width: 25px;"></i>
+                    <div>
+                        <div style="font-size: 11px; color: #666;">Author ID</div>
+                        <div style="color: #e0e0e0;">X6K18</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- About Project Card -->
+    <div style="background:#0f0f0f; border-radius:20px; padding:30px; border:1px solid #202020;">
+        <h3 style="margin-bottom: 20px; color: #34d399;">
+            <i class="fas fa-project-diagram"></i> About This Project
+        </h3>
+        
+        <div style="margin-bottom: 20px;">
+            <h4 style="color: #60a5fa; margin-bottom: 8px;">🏠 California Housing Price Prediction</h4>
+            <p style="color: #aaa; line-height: 1.6; font-size: 14px;">
+                A comprehensive machine learning dashboard for predicting house prices in California using multiple models including 
+                Linear Regression, Random Forest, XGBoost, and optimized Best XGBoost.
+            </p>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <h4 style="color: #60a5fa; margin-bottom: 8px;">📊 Features</h4>
+            <ul style="color: #aaa; line-height: 1.8; margin-left: 20px;">
+                <li>Multi-model comparison (4 different algorithms)</li>
+                <li>Interactive data visualizations with Chart.js</li>
+                <li>Real-time price predictions</li>
+                <li>Model performance tracking (R², RMSE, MAE)</li>
+                <li>Feature importance analysis</li>
+                <li>MLflow experiment tracking</li>
+            </ul>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <h4 style="color: #60a5fa; margin-bottom: 8px;">🛠️ Tech Stack</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <span style="background:#1e293b; padding:4px 12px; border-radius:15px; font-size:12px;">🐍 Python</span>
+                <span style="background:#1e293b; padding:4px 12px; border-radius:15px; font-size:12px;">🌶️ Flask</span>
+                <span style="background:#1e293b; padding:4px 12px; border-radius:15px; font-size:12px;">📊 Pandas</span>
+                <span style="background:#1e293b; padding:4px 12px; border-radius:15px; font-size:12px;">🤖 Scikit-learn</span>
+                <span style="background:#1e293b; padding:4px 12px; border-radius:15px; font-size:12px;">⚡ XGBoost</span>
+                <span style="background:#1e293b; padding:4px 12px; border-radius:15px; font-size:12px;">🌲 Random Forest</span>
+                <span style="background:#1e293b; padding:4px 12px; border-radius:15px; font-size:12px;">📈 Chart.js</span>
+                <span style="background:#1e293b; padding:4px 12px; border-radius:15px; font-size:12px;">🐳 MLflow</span>
+            </div>
+        </div>
+        
+        <div>
+            <h4 style="color: #60a5fa; margin-bottom: 8px;">📅 Version</h4>
+            <p style="color: #aaa;">v3.0.0 - Full Dashboard Edition (2026)</p>
+        </div>
+    </div>
+</div>
+
+<!-- Skills & Expertise -->
+<div style="background:#0f0f0f; border-radius:20px; padding:30px; border:1px solid #202020; margin-top: 30px;">
+    <h3 style="margin-bottom: 20px; color: #34d399;">
+        <i class="fas fa-crown"></i> Skills & Expertise
+    </h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        <div>
+            <h4 style="color: #60a5fa; margin-bottom: 10px;">Machine Learning</h4>
+            <ul style="color: #aaa; line-height: 1.8; margin-left: 20px;">
+                <li>Supervised Learning</li>
+                <li>Regression Analysis</li>
+                <li>Model Optimization</li>
+                <li>Feature Engineering</li>
+            </ul>
+        </div>
+        
+        <div>
+            <h4 style="color: #60a5fa; margin-bottom: 10px;">Data Science</h4>
+            <ul style="color: #aaa; line-height: 1.8; margin-left: 20px;">
+                <li>Data Visualization</li>
+                <li>Statistical Analysis</li>
+                <li>EDA</li>
+                <li>Data Preprocessing</li>
+            </ul>
+        </div>
+        
+        <div>
+            <h4 style="color: #60a5fa; margin-bottom: 10px;">Web Development</h4>
+            <ul style="color: #aaa; line-height: 1.8; margin-left: 20px;">
+                <li>Flask/Django</li>
+                <li>RESTful APIs</li>
+                <li>Frontend (HTML/CSS/JS)</li>
+                <li>Database Design</li>
+            </ul>
+        </div>
+        
+        <div>
+            <h4 style="color: #60a5fa; margin-bottom: 10px;">DevOps & Tools</h4>
+            <ul style="color: #aaa; line-height: 1.8; margin-left: 20px;">
+                <li>Git & GitHub</li>
+                <li>Docker</li>
+                <li>MLflow</li>
+                <li>CI/CD Pipeline</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Social Links & Connect -->
+<div style="background:#0f0f0f; border-radius:20px; padding:30px; border:1px solid #202020; margin-top: 30px; text-align: center;">
+    <h3 style="margin-bottom: 20px; color: #34d399;">
+        <i class="fas fa-share-alt"></i> Connect & Follow
+    </h3>
+    
+    <div style="display: flex; justify-content: center; gap: 25px; flex-wrap: wrap;">
+        <a href="https://github.com/X6K18" target="_blank" style="text-decoration: none;">
+            <div style="background:#050505; padding: 15px 25px; border-radius: 12px; transition: 0.3s; text-align: center;">
+                <i class="fab fa-github" style="font-size: 32px; color: #a78bfa;"></i>
+                <div style="color: #e0e0e0; margin-top: 8px;">GitHub</div>
+            </div>
+        </a>
+        
+        <a href="mailto:pn629503@gmail.com" style="text-decoration: none;">
+            <div style="background:#050505; padding: 15px 25px; border-radius: 12px; transition: 0.3s; text-align: center;">
+                <i class="fas fa-envelope" style="font-size: 32px; color: #60a5fa;"></i>
+                <div style="color: #e0e0e0; margin-top: 8px;">Email</div>
+            </div>
+        </a>
+        
+        <a href="#" style="text-decoration: none;">
+            <div style="background:#050505; padding: 15px 25px; border-radius: 12px; transition: 0.3s; text-align: center;">
+                <i class="fab fa-linkedin" style="font-size: 32px; color: #60a5fa;"></i>
+                <div style="color: #e0e0e0; margin-top: 8px;">LinkedIn</div>
+            </div>
+        </a>
+        
+        <a href="#" style="text-decoration: none;">
+            <div style="background:#050505; padding: 15px 25px; border-radius: 12px; transition: 0.3s; text-align: center;">
+                <i class="fab fa-twitter" style="font-size: 32px; color: #60a5fa;"></i>
+                <div style="color: #e0e0e0; margin-top: 8px;">Twitter</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Copyright Footer -->
+<div style="text-align: center; margin-top: 20px; padding: 15px; color: #555; font-size: 12px;">
+    <i class="fas fa-copyright"></i> 2026 Phan Trong Nguyen (X6K18). All rights reserved.
+    <br>
+    Built with <i class="fas fa-heart" style="color: #ef4444;"></i> for California Housing Price Prediction
+</div>
+
+<style>
+    a:hover div {
+        transform: translateY(-3px);
+        border-color: #60a5fa;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card {
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: #60a5fa;
+        box-shadow: 0 5px 20px rgba(96, 165, 250, 0.1);
+    }
+</style>
+
+{% endblock %}
