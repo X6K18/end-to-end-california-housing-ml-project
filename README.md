@@ -11,6 +11,56 @@ The system predicts housing prices based on multiple housing-related features fr
 ## Dashboard 
 https://github.com/user-attachments/assets/431827ae-d4d7-41fd-a5e8-ead51a1f08cf
 
+<p align="center">
+  <img 
+    width="95%" 
+    alt="Dashboard Overview"
+    src="https://github.com/user-attachments/assets/acc2cbb1-72b6-4454-96ea-fd856bfc8f5a" 
+  />
+</p>
+
+<br><br>
+
+<p align="center">
+  <img 
+    width="95%" 
+    alt="Analytics Dashboard"
+    src="https://github.com/user-attachments/assets/18fe3546-375a-4a17-9408-52842277b5c4" 
+  />
+</p>
+
+<br><br>
+
+<p align="center">
+  <img 
+    width="95%" 
+    alt="Sales Dashboard"
+    src="https://github.com/user-attachments/assets/8e4eb19c-87cb-4927-b707-25dbdc3413f3" 
+  />
+</p>
+
+<br><br>
+
+<p align="center">
+  <img 
+    width="95%" 
+    alt="Customer Dashboard"
+    src="https://github.com/user-attachments/assets/3371965b-72d3-421a-856c-7f5803437c01" 
+  />
+</p>
+
+<br><br>
+
+<p align="center">
+  <img 
+    width="95%" 
+    alt="Revenue Dashboard"
+    src="https://github.com/user-attachments/assets/95a26907-62d1-47d4-bcb0-6e02d39bfbfc" 
+  />
+</p>
+
+<br><br>
+---
 ## Features
 - California Housing dataset from Scikit-learn
 - End-to-end house price prediction
