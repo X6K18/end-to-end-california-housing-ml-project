@@ -1,6 +1,11 @@
-# California Housing Price Prediction 
+# END-TO-END HOUSING PRICE PREDICTION
+A comprehensive machine learning dashboard for predicting house prices in California using multiple models including Linear Regression, Random Forest, XGBoost, and optimized Best XGBoost.
 
-## Overview
+## Live Demo 
+<video controls src="reports/0511.mp4" title="Title"></video>
+
+## Overview 
+* 
 
 
 ---
