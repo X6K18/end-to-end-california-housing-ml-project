@@ -38,6 +38,14 @@ https://github.com/user-attachments/assets/431827ae-d4d7-41fd-a5e8-ead51a1f08cf
 | XGBoost | 0.2041 | 0.4518 | 0.3000 | 0.8445 |
 | Random Forest (Tuned) | **0.2000** | **0.4500** | **0.2900** | **0.8500** |
 
+<img width="1000" height="600" alt="Image" src="https://github.com/user-attachments/assets/3a252f59-d0eb-44bb-8b46-e142a827ae8a" />
+
+<img width="1000" height="600" alt="Image" src="https://github.com/user-attachments/assets/8bdb52cf-711d-40db-afd1-93c3491b2e1b" />
+
+<img width="1000" height="600" alt="Image" src="https://github.com/user-attachments/assets/8e8347e4-b82b-4626-acaa-3edeca39f28a" />
+
+<img width="1000" height="600" alt="Image" src="https://github.com/user-attachments/assets/cb67ee2c-d8c6-41eb-8ec1-f2ce1acf503c" />
+
 > Lower values are better for MSE, RMSE, and MAE.  
 > Higher values are better for R² Score.
 ---
