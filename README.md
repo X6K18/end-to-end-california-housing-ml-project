@@ -1,14 +1,14 @@
-# END-TO-END HOUSING PRICE PREDICTION
+# **END-TO-END HOUSING PRICE PREDICTION**
 A comprehensive machine learning dashboard for predicting house prices in California using multiple models including Linear Regression, Random Forest, XGBoost, and optimized Best XGBoost.
 
 ---
-## Overview 
+## 📌 **Overview**
 This project demonstrates a complete Machine Learning workflow from data preprocessing to model deployment using a modern Flask web application.
 
 The system predicts housing prices based on multiple housing-related features from the California Housing Dataset.
 
 ---
-## Dashboard 
+## 📊 **Dashboard** 
 https://github.com/user-attachments/assets/431827ae-d4d7-41fd-a5e8-ead51a1f08cf
 
 <p align="center">
@@ -60,8 +60,9 @@ https://github.com/user-attachments/assets/431827ae-d4d7-41fd-a5e8-ead51a1f08cf
 </p>
 
 <br><br>
+
 ---
-## Features
+## 🚀 **Features**
 - California Housing dataset from Scikit-learn
 - End-to-end house price prediction
 - Flask-based web application
@@ -72,12 +73,32 @@ https://github.com/user-attachments/assets/431827ae-d4d7-41fd-a5e8-ead51a1f08cf
 - Automated logging system
 ---
 
-## Machine Learning Pipline
+## 🧠 **Machine Learning Pipeline**
 ### Experimental Setup
 - Dataset: California Housing Dataset
 - Train/Test Split: 70/30
 - Random State: 42
-- Feature scaling using StandardScaler for Linear Regression 
+- Feature scaling using StandardScaler for Linear Regression
+- Evaluation Metrics:
+  - MSE
+  - RMSE
+  - MAE
+  - R² Score
+---
+
+### Dataset Feature
+| Feature | Description |
+|---|---|
+| MedInc | Median income in block group |
+| HouseAge | Median house age |
+| AveRooms | Average number of rooms |
+| AveBedrms | Average number of bedrooms |
+| Population | Block group population |
+| AveOccup | Average house occupancy |
+| Latitude | Latitude coordinate |
+| Longitude | Longitude coordinate |
+
+---
 
 ### Model Performance
 
@@ -101,7 +122,7 @@ https://github.com/user-attachments/assets/431827ae-d4d7-41fd-a5e8-ead51a1f08cf
 > Lower values are better for MSE, RMSE, and MAE.  
 > Higher values are better for R² Score.
 ---
-## Tech Stack
+## 🛠️ **Tech Stack**
 
 | Category | Technologies |
 |----------|-------------|
@@ -113,5 +134,45 @@ https://github.com/user-attachments/assets/431827ae-d4d7-41fd-a5e8-ead51a1f08cf
 | **Icons** | Font Awesome 6 |
 | **Tracking** | MLflow |
 | **Version Control** | Git, GitHub |
+
+---
+## **Installation**
+### Clone Repository
+```
+git clone git@github.com:X6K18/end-to-end-california-housing-ml-project.git
+cd housing-price-prediction
+```
+---
+
+### Create Virtual Environment
+#### Windows
+```
+python -m venv venv
+venv\Scripts\activate
+```
+
+#### Linux / macOS
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+---
+
+#### Install Dependencies
+```
+pip install -r requirements.txt
+```
+---
+
+## ▶️ Run Application
+```
+python -m app.main
+```
+---
+## 👨‍💻 Author
+Developed by Nguyen Phan
+
+
+
 
 
