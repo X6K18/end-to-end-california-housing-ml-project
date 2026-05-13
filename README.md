@@ -122,7 +122,7 @@ https://github.com/user-attachments/assets/431827ae-d4d7-41fd-a5e8-ead51a1f08cf
 > Lower values are better for MSE, RMSE, and MAE.  
 > Higher values are better for R² Score.
 ---
-## 🛠️ **Tech Stack**
+## 🧰 **Tech Stack**
 
 | Category | Technologies |
 |----------|-------------|
@@ -136,7 +136,7 @@ https://github.com/user-attachments/assets/431827ae-d4d7-41fd-a5e8-ead51a1f08cf
 | **Version Control** | Git, GitHub |
 
 ---
-## **Installation**
+## 🛠️ **Installation**
 ### Clone Repository
 ```
 git clone git@github.com:X6K18/end-to-end-california-housing-ml-project.git
